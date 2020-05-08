@@ -15,7 +15,8 @@ RUN apt-get update -qq -y && \
        ca-certificates \
        gnupg2 \
        software-properties-common \
-       locales
+       locales \
+       cron    
 RUN dpkg-reconfigure locales
 
 # Install Webmin
@@ -34,7 +35,7 @@ ENV LC_ALL C.UTF-8
 
 WORKDIR /home
 RUN echo "#! /bin/bash" > entrypoint.sh && \
-    echo "sed -i 's;ssl=1;ssl=0;' /etc/webmin/miniserv.conf && service webmin start && tail -f /dev/null" >> entrypoint.sh && \
+    echo "sed -i 's;ssl=1;ssl=0;' /etc/webmin/miniserv.conf && systemctl enable cron && service webmin start && tail -f /dev/null" >> entrypoint.sh && \
     chmod 755 entrypoint.sh
 
 CMD /home/entrypoint.sh
